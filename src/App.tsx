@@ -23,6 +23,7 @@ const IMG_TOOL_ANTIGRAVITY = '/images/logo/antigravity.webp';
 const IMG_TOOL_CURSOR      = '/images/logo/cursor.webp';
 const IMG_TOOL_VERCEL      = '/images/logo/vercel.webp';
 const IMG_TOOL_SUPABASE    = '/images/logo/supabase.webp';
+const IMG_TOOL_GITHUB      = '/images/logo/github.jpg';
 
 function Button({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
@@ -697,6 +698,7 @@ function Home() {
                 tools: [
                   { name: 'Vercel',   by: 'Vercel Inc.',   logo: IMG_TOOL_VERCEL,   desc: 'フロントエンドアプリをワンコマンドで公開できるデプロイ基盤' },
                   { name: 'Supabase', by: 'Supabase Inc.', logo: IMG_TOOL_SUPABASE, desc: '認証・DB・ストレージをすぐに使えるオープンソースBaaS' },
+                  { name: 'GitHub',   by: 'GitHub Inc.',   logo: IMG_TOOL_GITHUB,   desc: 'コードのホスティングとバージョン管理。チーム開発・CI/CDの起点となるプラットフォーム' },
                 ],
               },
             ].map((category, ci) => (
