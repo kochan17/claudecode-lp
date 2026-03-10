@@ -251,8 +251,8 @@ function Navbar() {
           <Link to="/#faq" className="text-sm font-bold text-white/70 hover:text-white transition-colors">FAQ</Link>
         </div>
 
-        <Link to="/#pricing" className="relative group overflow-hidden bg-gradient-to-r from-[#d97757] to-[#e85d3a] text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,87,0.4)] hover:shadow-[0_0_30px_rgba(217,119,87,0.6)] hover:scale-105 z-10">
-          <span className="relative z-10 flex items-center gap-2">お問い合わせ <ArrowUpRight className="w-4 h-4" /></span>
+        <Link to="/apply" className="relative group overflow-hidden bg-gradient-to-r from-[#d97757] to-[#e85d3a] text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,87,0.4)] hover:shadow-[0_0_30px_rgba(217,119,87,0.6)] hover:scale-105 z-10">
+          <span className="relative z-10 flex items-center gap-2">お申し込み <ArrowUpRight className="w-4 h-4" /></span>
           <div className="absolute inset-0 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/30 to-transparent w-1/2 skew-x-12"></div>
         </Link>
       </div>
@@ -434,9 +434,13 @@ function Home() {
                 </motion.button>
               </Link>
 
-              <p className="text-lg md:text-xl text-white/90 mb-12 leading-relaxed font-medium">
+              <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed font-medium">
                 単なる「生成AIの活用」から一歩先へ。AIエージェントを用いた実践的なワークショップを通じて、自律型AIエージェントを実務で活用するためのコアスキルを解説します。
               </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/8 backdrop-blur-md text-white/60 text-sm mb-12">
+                <Terminal className="w-4 h-4" />
+                <span>このサイトもClaude Codeで作りました</span>
+              </div>
             </motion.div>
           </div>
 
@@ -1030,6 +1034,7 @@ type FormState = {
   notes: string;
   agreeTools: boolean;
   agreeBilling: boolean;
+  agreePrivacy: boolean;
 };
 
 type Errors = Partial<Record<keyof FormState, string>>;
@@ -1057,13 +1062,14 @@ function validateForm(f: FormState): Errors {
   if (f.tools.length === 0) e.tools = '希望ツールを1つ以上選択してください';
   if (!f.agreeTools)   e.agreeTools   = '同意が必要です';
   if (!f.agreeBilling) e.agreeBilling = '同意が必要です';
+  if (!f.agreePrivacy) e.agreePrivacy = '同意が必要です';
   return e;
 }
 
 const INITIAL_FORM: FormState = {
   companyName:'', lastName:'', firstName:'', lastNameKana:'', firstNameKana:'',
   email:'', phone:'', participants:'', tools:[], notes:'',
-  agreeTools: false, agreeBilling: false,
+  agreeTools: false, agreeBilling: false, agreePrivacy: false,
 };
 
 function FieldError({ msg }: { msg?: string }) {
@@ -1236,10 +1242,10 @@ function Apply() {
               {/* 同意事項 */}
               <div className="space-y-4 pt-2">
                 <p className="text-sm font-bold text-[#141413]">同意事項 <span className="text-[#d97757]">*</span></p>
-                {[
+                {([
                   { key: 'agreeTools' as const, label: '選択したツールがファイアウォール等のセキュリティソフトにより使用できない場合があることを理解しました' },
                   { key: 'agreeBilling' as const, label: 'ツールの課金・契約はご自身の管理となることを理解しました' },
-                ].map(({ key, label }) => (
+                ] as { key: 'agreeTools' | 'agreeBilling'; label: React.ReactNode }[]).map(({ key, label }) => (
                   <label key={key} className="flex items-start gap-3 cursor-pointer group">
                     <input
                       type="checkbox"
@@ -1253,7 +1259,21 @@ function Apply() {
                     <span className="text-sm text-[#141413]/70 leading-relaxed group-hover:text-[#141413] transition-colors">{label}</span>
                   </label>
                 ))}
-                {(errors.agreeTools || errors.agreeBilling) && (
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={form.agreePrivacy}
+                    onChange={e => {
+                      setForm(prev => ({ ...prev, agreePrivacy: e.target.checked }));
+                      setErrors(prev => ({ ...prev, agreePrivacy: undefined }));
+                    }}
+                    className="mt-0.5 w-5 h-5 rounded border-[#141413]/20 accent-[#d97757] cursor-pointer flex-shrink-0"
+                  />
+                  <span className="text-sm text-[#141413]/70 leading-relaxed group-hover:text-[#141413] transition-colors">
+                    <Link to="/privacy" target="_blank" className="underline hover:text-[#d97757] transition-colors">プライバシーポリシー</Link>に同意します
+                  </span>
+                </label>
+                {(errors.agreeTools || errors.agreeBilling || errors.agreePrivacy) && (
                   <p className="text-red-500 text-sm">すべての同意事項にチェックしてください</p>
                 )}
               </div>
